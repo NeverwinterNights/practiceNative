@@ -1,16 +1,17 @@
-import React from 'react';
-import {Button, Image, Platform, StyleSheet, TouchableNativeFeedback, TouchableOpacity, View} from 'react-native';
+import React, {ReactNode} from 'react';
+import {Image, Platform, StyleSheet, TouchableNativeFeedback, TouchableOpacity, View} from 'react-native';
 import {AppText} from "../AppText";
 import Colors from "../../constants/Colors";
 import {ProductType} from "../../types/types";
 
 type ProductItemPropsType = {
     item: ProductType
-    onViewDetails: () => void
-    onAddToCard: () => void
+    // onViewDetails?: () => void
+    onSelect: () => void
+    children?: ReactNode
 }
 
-export const ProductItem = ({item, onViewDetails, onAddToCard}: ProductItemPropsType) => {
+export const ProductItem = ({item, onSelect, children}: ProductItemPropsType) => {
     let TouchableCustom: React.ElementType = TouchableOpacity
 
     if (Platform.OS === "android" && Platform.Version >= 21) {
@@ -18,7 +19,7 @@ export const ProductItem = ({item, onViewDetails, onAddToCard}: ProductItemProps
     }
 
     return (
-        <TouchableCustom onPress={onViewDetails} useForeground>
+        <TouchableCustom onPress={onSelect} useForeground>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
                     <Image style={styles.image} source={{uri: item.imageUrl}}/>
@@ -28,8 +29,7 @@ export const ProductItem = ({item, onViewDetails, onAddToCard}: ProductItemProps
                     <AppText style={styles.price}>${item.price.toFixed(2)}</AppText>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <Button color={Colors.primary} title={"View Details"} onPress={onViewDetails}/>
-                    <Button color={Colors.primary} title={"To Cart"} onPress={onAddToCard}/>
+                    {children}
                 </View>
             </View>
         </TouchableCustom>

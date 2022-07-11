@@ -7,6 +7,7 @@ import {ModifiedCartItems} from "../../types/types";
 import {ItemCart} from "../../components/shop/ItemCart";
 import {removeFromCartAC} from "../../store/cartReducer";
 import {addOrderAC} from "../../store/ordersReducer";
+import {CardWrapper} from "../../components/UI/CardWrapper";
 
 type CartScreenPropsType = {}
 
@@ -32,14 +33,13 @@ export const CartScreen = ({}: CartScreenPropsType) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.summary}>
-                <AppText style={styles.summaryText}>Total: <AppText style={styles.amount}>${total.toFixed(2)}</AppText></AppText>
+            <CardWrapper style={styles.summary}>
+                <AppText style={styles.summaryText}>Total: <AppText style={styles.amount}>${Math.abs(total).toFixed(2)}</AppText></AppText>
                 <Button onPress={()=> dispatch(addOrderAC({cartItem: modifiedCartItems, totalAmount: total}))} color={Colors.accent} title={"Order Now"} disabled={modifiedCartItems.length === 0}/>
-            </View>
-            {/*<FlatList data={} renderItem={}/>*/}
+            </CardWrapper>
             <View>
                 <FlatList data={modifiedCartItems} keyExtractor={(item) => item.productId} renderItem={({item}) =>
-                    <ItemCart item={item} onRemove={() => onRemove(item.productId)}/>
+                    <ItemCart deletable item={item} onRemove={() => onRemove(item.productId)}/>
                 }/>
             </View>
         </View>
@@ -65,12 +65,5 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         marginBottom: 20,
         padding: 10,
-        shadowColor: "black",
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.26,
-        shadowRadius: 8,
-        elevation: 5,
-        borderRadius: 10,
-        backgroundColor: Colors.white
     },
 });

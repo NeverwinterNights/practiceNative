@@ -4,12 +4,15 @@ import Colors from "../constants/Colors";
 import {ProductDetailScreen} from "../screens/shop/ProductDetailScreen";
 import {CartScreen} from "../screens/shop/CartScreen";
 import {OrdersScreen} from "../screens/shop/OrdersScreen";
+import {UserProductScreen} from "../screens/user/UserProductScreen";
+import { EditProductScreen } from "../screens/user/EditProductScreen";
 
 const Stack = createNativeStackNavigator()
 
 
-export const ShopNavigator = () => (
+export const UserNavigator = () => (
     <Stack.Navigator screenOptions={{
+
         headerStyle: {
             backgroundColor: Colors.primary
         },
@@ -18,10 +21,10 @@ export const ShopNavigator = () => (
         },
         headerTintColor: Colors.white
     }}>
-        <Stack.Screen options={{headerTitle: "All Products", headerTitleAlign: "center"}} name="ProductOverviewScreen" component={ProductOverviewScreen}/>
-        <Stack.Screen options={{headerTitle: "Product Detail", headerTitleAlign: "center"}} name="ProductDetailScreen" component={ProductDetailScreen}/>
-        <Stack.Screen options={{headerTitle: "Your Cart", headerTitleAlign: "center"}} name="CartScreen" component={CartScreen}/>
-        {/*<Stack.Screen options={{headerTitle: "Orders", headerTitleAlign: "center"}} name="OrdersScreen" component={OrdersScreen}/>*/}
+        <Stack.Screen options={{headerTitle: "Your Product", headerTitleAlign: "center"}} name="UserProductScreen" component={UserProductScreen}/>
+        <Stack.Screen options={{headerTitleAlign: "center"}} name="EditProductScreen" component={EditProductScreen}/>
+
 
     </Stack.Navigator>
 )
+

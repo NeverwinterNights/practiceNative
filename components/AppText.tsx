@@ -3,7 +3,7 @@ import {ReactNode} from "react";
 
 type AppTextPropsType = {
     children: number | string | ReactNode
-     style?: StyleProp<TextStyle>
+    style?: StyleProp<TextStyle>
 }
 
 export const AppText = ({children, style, ...restProps}: AppTextPropsType & TextProps) => {

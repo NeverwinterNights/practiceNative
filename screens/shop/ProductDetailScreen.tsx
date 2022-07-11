@@ -1,13 +1,11 @@
 import React, {useLayoutEffect} from 'react';
 import {Button, Image, ScrollView, StyleSheet, View} from 'react-native';
 import {AppText} from "../../components/AppText";
-import {NavigationUseType, ProductDetailScreenProps, useAppNavigation} from "../../navigation/types";
+import {ProductDetailScreenProps, useAppNavigation} from "../../navigation/types";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {ProductType} from "../../types/types";
-import {useNavigation} from "@react-navigation/native";
 import Colors from "../../constants/Colors";
 import {addToCartAC} from "../../store/cartReducer";
-
 
 
 export const ProductDetailScreen = ({route}: ProductDetailScreenProps) => {

@@ -8,8 +8,9 @@ import {OrdersScreen} from "../screens/shop/OrdersScreen";
 const Stack = createNativeStackNavigator()
 
 
-export const ShopNavigator = () => (
+export const OrderNavigator = () => (
     <Stack.Navigator screenOptions={{
+
         headerStyle: {
             backgroundColor: Colors.primary
         },
@@ -18,10 +19,8 @@ export const ShopNavigator = () => (
         },
         headerTintColor: Colors.white
     }}>
-        <Stack.Screen options={{headerTitle: "All Products", headerTitleAlign: "center"}} name="ProductOverviewScreen" component={ProductOverviewScreen}/>
-        <Stack.Screen options={{headerTitle: "Product Detail", headerTitleAlign: "center"}} name="ProductDetailScreen" component={ProductDetailScreen}/>
-        <Stack.Screen options={{headerTitle: "Your Cart", headerTitleAlign: "center"}} name="CartScreen" component={CartScreen}/>
-        {/*<Stack.Screen options={{headerTitle: "Orders", headerTitleAlign: "center"}} name="OrdersScreen" component={OrdersScreen}/>*/}
+        <Stack.Screen options={{headerTitle: "Your Orders", headerTitleAlign: "center"}} name="OrdersScreen" component={OrdersScreen}/>
+
 
     </Stack.Navigator>
 )

@@ -1,6 +1,8 @@
 import {createAction, createSlice} from "@reduxjs/toolkit";
 import {ProductType} from "../types/types";
 import {CartItem} from "../models/cartItem";
+import {addOrderAC} from "./ordersReducer";
+import {deleteProductAC} from "./productsReducer";
 
 
 type ItemType = {
@@ -11,8 +13,6 @@ type ItemType = {
 }
 
 
-
-
 type initialStateType = {
     items: { [key: string]: ItemType },
     totalAmount: number
@@ -20,7 +20,7 @@ type initialStateType = {
 
 
 const initialState: initialStateType = {
-    items: {},
+    items: {} as { [key: string]: ItemType },
     totalAmount: 0
 }
 
@@ -46,30 +46,40 @@ const slice = createSlice({
                         state.items[product.id].sum + price
                     )
                     state.items = {...state.items, [action.payload.product.id]: updatedCartItem}
-                    state.totalAmount= state.totalAmount+product.price
+                    state.totalAmount = state.totalAmount + product.price
                 } else {
                     const newCartItem = new CartItem(1, price, title, price)
                     state.items = {...state.items, [action.payload.product.id]: newCartItem}
-                    state.totalAmount= state.totalAmount+product.price
+                    state.totalAmount = state.totalAmount + product.price
                 }
             })
             .addCase(removeFromCartAC, (state, action) => {
-                const  currentAmount = state.items[action.payload.id].quantity
+                const currentAmount = state.items[action.payload.id].quantity
                 const currentItem = state.items[action.payload.id]
-                if (currentAmount>1) {
-                    state.items[action.payload.id] = new CartItem(currentItem.quantity-1, currentItem.price, currentItem.title, currentItem.sum-currentItem.price)
-                    state.totalAmount = state.totalAmount-state.items[action.payload.id].price
+                if (currentAmount > 1) {
+                    state.items[action.payload.id] = new CartItem(currentItem.quantity - 1, currentItem.price, currentItem.title, currentItem.sum - currentItem.price)
+                    state.totalAmount = state.totalAmount - state.items[action.payload.id].price
                 } else {
-                    state.totalAmount = state.totalAmount-state.items[action.payload.id].price
-                    delete  state.items[action.payload.id]
+                    state.totalAmount = state.totalAmount - state.items[action.payload.id].price
+                    delete state.items[action.payload.id]
                     // console.log("state.totalAmount", state.totalAmount );
                     // console.log("state.items[action.payload.id].price", state.items[action.payload.id].price );
-
+                }
+            })
+            .addCase(addOrderAC, (state, action) => {
+                return initialState
+            })
+            .addCase(deleteProductAC, (state, action) => {
+                if (!state.items[action.payload]) {
+                    return
+                } else {
+                    const totalSum = state.items[action.payload].sum
+                    delete state.items[action.payload]
+                    state.totalAmount = state.totalAmount - totalSum
                 }
 
+
             })
-
-
     },
 })
 

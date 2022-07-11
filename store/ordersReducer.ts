@@ -3,16 +3,17 @@ import {Order} from "../models/order";
 import {ModifiedCartItems} from "../types/types";
 
 
-type Orders = {
+type OrderType = {
     id: string,
-    items: ModifiedCartItems,
+    items: ModifiedCartItems[],
     totalAmount: number,
     date: Date
+    correctDate: string
 }
 
 
 type initialStateType = {
-    orders: Orders[]
+    orders: OrderType[]
 }
 
 

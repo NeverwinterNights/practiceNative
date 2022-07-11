@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
-import {ShopNavigator} from "../navigation/ShopNavigator";
+import {DrawerNavigator} from "../navigation/DrawerNavigation";
 
 
 export const Main = () => {
     return (
-        <ShopNavigator/>
+        <DrawerNavigator/>
     );
 };
 
