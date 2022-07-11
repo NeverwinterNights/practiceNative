@@ -1,5 +1,5 @@
 import React, {useCallback, useLayoutEffect, useState} from 'react';
-import {Keyboard, Platform, ScrollView, StyleSheet, TextInput, View} from 'react-native';
+import {Alert, Keyboard, Platform, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import {EditProductScreenProps, useAppNavigation} from "../../navigation/types";
 import {AppText} from "../../components/AppText";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
@@ -15,14 +15,17 @@ export const EditProductScreen = ({route}: EditProductScreenProps) => {
     const navigation = useAppNavigation()
     const dispatch = useAppDispatch()
 
+
     const [title, setTitle] = useState(editedProducts ? editedProducts.title : "");
+    const [isTitleValid, setIsTitleValid] = useState(false);
+
+
     const [imageUrl, setImageURL] = useState(editedProducts ? editedProducts.imageUrl : "");
     const [price, setPrice] = useState("");
     const [description, setDescription] = useState(editedProducts ? editedProducts.description : "");
 
 
     useLayoutEffect(() => {
-
         navigation.setOptions(
             {
                 headerTitle: productID ? "Edit Product" : "Add Product",
@@ -33,10 +36,16 @@ export const EditProductScreen = ({route}: EditProductScreenProps) => {
                     </HeaderButtons>
                 )
             });
-    }, [navigation, dispatch, productID, title, description, imageUrl, price]);
-
+        // }, [navigation, dispatch, productID, title, description, imageUrl, isTitleValid, price]);
+    }, [navigation, dispatch, productID, title, description, imageUrl, isTitleValid, price]);
 
     const submit = useCallback(() => {
+        if (!isTitleValid) {
+            Alert.alert("Enter valid title", "", [
+                {text: "Okay"}
+            ])
+            return
+        }
         if (editedProducts) {
             productID && dispatch(updateProductAC({id: productID, title, description, imageUrl}))
         } else {
@@ -44,27 +53,47 @@ export const EditProductScreen = ({route}: EditProductScreenProps) => {
         }
         Keyboard.dismiss()
         navigation.goBack()
-    }, [dispatch, productID, title, description, imageUrl, price])
+    }, [dispatch, productID, title, description, imageUrl, isTitleValid, price])
 
+
+    const inputHandler = (text: string) => {
+
+        if (text.trim().length === 0) {
+            setIsTitleValid(false)
+
+        } else {
+            setIsTitleValid(true)
+        }
+        setTitle(text)
+
+
+    }
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.main}>
                 <View style={styles.form}>
                     <AppText style={styles.label}>Title</AppText>
-                    <TextInput value={title} onChangeText={title => setTitle(title)} style={styles.input}/>
+                    <TextInput autoCapitalize={"sentences"} autoCorrect={false} keyboardType={"default"} value={title}
+                               onChangeText={title => inputHandler(title)} style={styles.input}/>
                 </View>
                 <View style={styles.form}>
                     <AppText style={styles.label}>Image</AppText>
-                    <TextInput value={imageUrl} onChangeText={imageURL => setImageURL(imageURL)} style={styles.input}/>
+                    <TextInput value={imageUrl} onChangeText={imageURL => inputHandler(imageURL)}
+                               style={styles.input}/>
                 </View>
-                {editedProducts ? null : <View style={styles.form}>
-                    <AppText style={styles.label}>Price</AppText>
-                    <TextInput value={price} onChangeText={price => setPrice(price)} style={styles.input}/>
-                </View>}
+                {editedProducts ?
+                    null :
+                    <View style={styles.form}>
+                        <AppText style={styles.label}>Price</AppText>
+                        <TextInput keyboardType={"decimal-pad"} value={price}
+                                   onChangeText={price => inputHandler(price)}
+                                   style={styles.input}/>
+                    </View>}
                 <View style={styles.form}>
                     <AppText style={styles.label}>Description</AppText>
-                    <TextInput value={description} onChangeText={description => setDescription(description)}
+                    <TextInput value={description}
+                               onChangeText={description => inputHandler(description)}
                                style={styles.input}/>
                 </View>
             </View>
