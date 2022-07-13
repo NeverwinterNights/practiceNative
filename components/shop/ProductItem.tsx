@@ -18,6 +18,7 @@ export const ProductItem = ({item, onSelect, children}: ProductItemPropsType) =>
         TouchableCustom = TouchableNativeFeedback
     }
 
+
     return (
         <TouchableCustom onPress={onSelect} useForeground>
             <View style={styles.container}>

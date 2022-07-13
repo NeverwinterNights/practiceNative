@@ -1,7 +1,7 @@
-import {createAction, createSlice} from "@reduxjs/toolkit";
-import {PRODUCTS} from "../data/dummy-data";
+import {createAction, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {ProductType} from "../types/types";
 import {Product} from "../models/products";
+import {apiRequests} from "../api/requests";
 
 
 type initialStateType = {
@@ -11,14 +11,53 @@ type initialStateType = {
 
 
 const initialState: initialStateType = {
-    availableProducts: PRODUCTS,
-    userProducts: PRODUCTS.filter((product) => product.ownerId === "u1")
+    // availableProducts: PRODUCTS,
+    // userProducts: PRODUCTS.filter((product) => product.ownerId === "u1")
+    availableProducts: [],
+    userProducts: []
 }
 
 export const deleteProductAC = createAction<string>("product/deleteProductAC")
 export const createProductAC = createAction<{ title: string, description: string, imageUrl: string, price: number }>("product/createProductAC")
 export const updateProductAC = createAction<{ id: string, title: string, description: string, imageUrl: string }>("product/updateProductAC")
 
+export const createProductTC = createAsyncThunk("product/createProductTC",
+    async (param: { title: string, description: string, imageUrl: string, price: number }, {dispatch}) => {
+        try {
+            const res = await apiRequests.createProd(param.title, param.description, param.imageUrl, param.price)
+            return {data: res.config.data, id: res.data.name};
+        } catch (error) {
+
+        }
+    })
+
+
+export const fetchProductTC = createAsyncThunk("product/fetchProductTC", async (param, {dispatch}) => {
+    try {
+        const res = await apiRequests.fetchProducts()
+        return res.data
+    } catch (error) {
+
+    }
+})
+
+export const updateProductTC = createAsyncThunk("product/updateProductTC",
+    async (param: { id: string, title: string, description: string, imageUrl: string }, {dispatch}) => {
+        try {
+            await apiRequests.updateProd(param.id, param.title, param.description, param.imageUrl)
+        } catch (error) {
+
+        }
+    })
+
+export const deleteProductTC = createAsyncThunk("product/deleteProductTC",
+    async (param: { id: string }, {dispatch}) => {
+        try {
+            await apiRequests.deleteProd(param.id)
+        } catch (error) {
+
+        }
+    })
 
 const slice = createSlice({
     name: "product",
@@ -55,6 +94,19 @@ const slice = createSlice({
                 state.userProducts[index] = updatedProd
                 const availableIndex = state.availableProducts.findIndex((product) => product.id === action.payload.id)
                 state.availableProducts[availableIndex] = updatedProd
+            })
+            .addCase(createProductTC.fulfilled, (state, action) => {
+
+            })
+
+            .addCase(fetchProductTC.fulfilled, (state, action) => {
+                const loadedProduct = []
+                const res = action.payload
+                for (const key in res) {
+                    loadedProduct.push(new Product(key, "u1", res[key].title, res[key].imageUrl, res[key].description, res[key].price))
+                }
+                state.availableProducts = loadedProduct
+                state.userProducts = loadedProduct.filter((product) => product.ownerId === 'u1')
             })
     },
 })

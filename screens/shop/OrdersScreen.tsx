@@ -15,8 +15,6 @@ export const OrdersScreen = ({}: OrdersScreenPropsType) => {
 
     const orders = useAppSelector(state => state.ordersReducer.orders)
 
-    console.log(orders.length);
-
     useLayoutEffect(() => {
         navigation.setOptions(
             {
@@ -46,7 +44,7 @@ export const OrdersScreen = ({}: OrdersScreenPropsType) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
+        flex: 1,
         alignItems: "center",
         justifyContent: "center",
     }

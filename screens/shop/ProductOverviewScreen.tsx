@@ -1,5 +1,5 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {Button, FlatList, Platform, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import {ActivityIndicator, Button, FlatList, Platform, StyleSheet, Text, View} from 'react-native';
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {ProductItem} from "../../components/shop/ProductItem";
 import {useAppNavigation} from "../../navigation/types";
@@ -8,33 +8,59 @@ import {CustomHeaderButton} from "../../components/UI/CustomHeaderButton";
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {DrawerActions} from "@react-navigation/native";
 import Colors from '../../constants/Colors';
+import {fetchProductTC} from "../../store/productsReducer";
+import {AppText} from "../../components/AppText";
 
-type ProductOverviewScreenPropsType = {}
 
-
-export const ProductOverviewScreen = ({}: ProductOverviewScreenPropsType) => {
+export const ProductOverviewScreen = () => {
     const navigation = useAppNavigation()
     const products = useAppSelector(state => state.productsReducer.availableProducts)
     const dispatch = useAppDispatch()
 
     const [count, setCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const productsInCart = useAppSelector(state => state.cartReducer.items)
-
-
     let quantityProductsInCart: number = 0
+
+
+    useEffect(() => {
+        const loadingProducts = async () => {
+            setIsLoading(true)
+            await dispatch(fetchProductTC())
+            setIsLoading(false)
+        }
+        loadingProducts()
+    }, [])
+
+    const loadProducts = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            await dispatch(fetchProductTC());
+        } catch (err) {
+
+        }
+        setIsLoading(false);
+    }, [dispatch, setIsLoading]);
+
+
+    useEffect(() => {
+
+        navigation.addListener("focus", loadProducts)
+        return () => {
+            navigation.removeListener("focus", loadProducts)
+        }
+    }, [loadProducts])
 
     useEffect(() => {
         for (const key in productsInCart) {
             quantityProductsInCart = quantityProductsInCart + productsInCart[key].quantity
             setCount(quantityProductsInCart)
         }
-        if (Object.keys(productsInCart).length==0) {
+        if (Object.keys(productsInCart).length == 0) {
             setCount(0)
         }
     }, [productsInCart])
-
-
 
     useLayoutEffect(() => {
         navigation.setOptions(
@@ -43,7 +69,6 @@ export const ProductOverviewScreen = ({}: ProductOverviewScreenPropsType) => {
                     <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                         <Item title={"Cart"} iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
                               onPress={() => navigation.navigate('ShopNavigator', {screen: 'CartScreen'})}/>
-                        {/*<Item style={{left:10}} title={"Cart"} iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}><AppText>3</AppText></Item>*/}
                         {count > 0 && <View style={styles.badge}><Text style={styles.text}>{count}</Text></View>}
                     </HeaderButtons>
                 ),
@@ -66,6 +91,25 @@ export const ProductOverviewScreen = ({}: ProductOverviewScreenPropsType) => {
         })
     }
 
+    if (isLoading) {
+        return <View style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+        }}>
+            <ActivityIndicator size={"large"} color={Colors.primary}/>
+        </View>
+    }
+
+    if (!isLoading && products.length === 0) {
+        return <View style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+        }}>
+            <AppText>No products!</AppText>
+        </View>
+    }
 
     return (
         <FlatList
@@ -82,7 +126,6 @@ export const ProductOverviewScreen = ({}: ProductOverviewScreenPropsType) => {
                 }}/>
                 <Button color={Colors.primary} title={"To Cart"}
                         onPress={() => dispatch(addToCartAC({product: item}))}/>
-
             </ProductItem>
             }
             keyExtractor={(item) => item.id}/>
@@ -94,7 +137,6 @@ const styles = StyleSheet.create({
         width: 17,
         height: 17,
         borderRadius: 17 / 2,
-        // backgroundColor: "green",
         position: "absolute",
         bottom: 15,
         right: 0,
@@ -102,7 +144,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         borderColor: Colors.white,
-
     },
     text: {
         color: Colors.white,
