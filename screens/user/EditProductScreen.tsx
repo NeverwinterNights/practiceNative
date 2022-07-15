@@ -1,18 +1,13 @@
 import React from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Alert, Keyboard, StyleSheet, View} from 'react-native';
 import {AppForm} from "../../components/form/AppForm";
 import * as Yup from "yup";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {EditProductScreenProps, useAppNavigation} from "../../navigation/types";
 import {FormScreen} from "../../components/form/FormScreen";
 import {FormikHelpers, FormikValues} from "formik";
-import {
-    createProductAC,
-    createProductTC,
-    fetchProductTC,
-    updateProductAC,
-    updateProductTC
-} from "../../store/productsReducer";
+import {createProductTC, updateProductTC} from "../../store/productsReducer";
+import Colors from "../../constants/Colors";
 
 
 const validationSchema = Yup.object().shape({
@@ -30,29 +25,21 @@ export const EditProductScreen = ({route}: EditProductScreenProps) => {
         const editedProducts = useAppSelector(state => state.productsReducer.userProducts.filter((product) => product.id === productID)[0])
         const navigation = useAppNavigation()
 
+        const error = useAppSelector(state => state.appReducer.error)
+        const isLoading = useAppSelector(state => state.appReducer.isLoading)
 
-        const submit = (values: FormikValues, {resetForm}: FormikHelpers<any>) => {
+
+        const submit = async (values: FormikValues, {resetForm}: FormikHelpers<any>) => {
+
             if (editedProducts) {
-                productID && dispatch(updateProductTC({
-                    id: productID,
-                    title: values.title,
-                    description: values.description,
-                    imageUrl: values.imageUrl
-                }))
-                productID && dispatch(updateProductAC({
+                productID && await dispatch(updateProductTC({
                     id: productID,
                     title: values.title,
                     description: values.description,
                     imageUrl: values.imageUrl
                 }))
             } else {
-                dispatch(createProductTC({
-                    title: values.title,
-                    description: values.description,
-                    imageUrl: values.imageUrl,
-                    price: Number(values.price)
-                }))
-                dispatch(createProductAC({
+                await dispatch(createProductTC({
                     title: values.title,
                     description: values.description,
                     imageUrl: values.imageUrl,
@@ -60,10 +47,21 @@ export const EditProductScreen = ({route}: EditProductScreenProps) => {
                 }))
             }
             Keyboard.dismiss()
-            navigation.goBack()
-            resetForm()
+            if (!error) {
+                navigation.goBack()
+            }
+            if (error) {
+                Alert.alert("An error happened", error, [
+                    {text: "Ok"}
+                ])
+            }
         }
 
+        if (isLoading) {
+            return <View style={styles.centered}>
+                <ActivityIndicator size={"large"} color={Colors.primary}/>
+            </View>
+        }
 
         return (
             <View style={styles.container}>
@@ -83,6 +81,11 @@ export const EditProductScreen = ({route}: EditProductScreenProps) => {
 
 const styles = StyleSheet.create({
     container: {},
+    centered: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    }
 
 });
 

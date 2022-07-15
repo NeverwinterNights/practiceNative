@@ -4,11 +4,13 @@ import thunkMiddleware from 'redux-thunk'
 import {productsReducer} from "./productsReducer";
 import {cartReducer} from "./cartReducer";
 import {ordersReducer} from "./ordersReducer";
+import {appReducer} from "./appReducer";
 
 const rootReducer = combineReducers({
     productsReducer: productsReducer,
     cartReducer: cartReducer,
-    ordersReducer: ordersReducer
+    ordersReducer: ordersReducer,
+    appReducer:appReducer
 })
 
 

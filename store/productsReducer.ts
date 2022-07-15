@@ -2,6 +2,7 @@ import {createAction, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {ProductType} from "../types/types";
 import {Product} from "../models/products";
 import {apiRequests} from "../api/requests";
+import {setErrorAC, setIsLoadingAC} from "./appReducer";
 
 
 type initialStateType = {
@@ -23,11 +24,19 @@ export const updateProductAC = createAction<{ id: string, title: string, descrip
 
 export const createProductTC = createAsyncThunk("product/createProductTC",
     async (param: { title: string, description: string, imageUrl: string, price: number }, {dispatch}) => {
+        dispatch(setIsLoadingAC({value: true}))
         try {
             const res = await apiRequests.createProd(param.title, param.description, param.imageUrl, param.price)
+            dispatch(createProductAC({
+                title: param.title,
+                description: param.description,
+                imageUrl: param.imageUrl,
+                price: Number(param.price)
+            }))
             return {data: res.config.data, id: res.data.name};
         } catch (error) {
-
+            dispatch(setIsLoadingAC({value: false}))
+            dispatch(setErrorAC({value: error.message}))
         }
     })
 
@@ -43,11 +52,22 @@ export const fetchProductTC = createAsyncThunk("product/fetchProductTC", async (
 
 export const updateProductTC = createAsyncThunk("product/updateProductTC",
     async (param: { id: string, title: string, description: string, imageUrl: string }, {dispatch}) => {
+
+        dispatch(setIsLoadingAC({value: true}))
         try {
             await apiRequests.updateProd(param.id, param.title, param.description, param.imageUrl)
-        } catch (error) {
+            dispatch(updateProductAC({
+                id: param.id,
+                title: param.title,
+                description: param.description,
+                imageUrl: param.imageUrl
+            }))
 
+        } catch (error) {
+            dispatch(setIsLoadingAC({value: false}))
+            dispatch(setErrorAC({value: error.message}))
         }
+
     })
 
 export const deleteProductTC = createAsyncThunk("product/deleteProductTC",

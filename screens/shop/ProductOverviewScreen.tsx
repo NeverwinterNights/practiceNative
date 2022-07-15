@@ -19,6 +19,7 @@ export const ProductOverviewScreen = () => {
 
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isrRefreshing, setIsRefreshing] = useState(false);
 
     const productsInCart = useAppSelector(state => state.cartReducer.items)
     let quantityProductsInCart: number = 0
@@ -34,13 +35,15 @@ export const ProductOverviewScreen = () => {
     }, [])
 
     const loadProducts = useCallback(async () => {
-        setIsLoading(true);
+        // setIsLoading(true);
+        setIsRefreshing(true);
         try {
             await dispatch(fetchProductTC());
         } catch (err) {
 
         }
-        setIsLoading(false);
+        setIsRefreshing(false);
+        // setIsLoading(false);
     }, [dispatch, setIsLoading]);
 
 
@@ -128,7 +131,10 @@ export const ProductOverviewScreen = () => {
                         onPress={() => dispatch(addToCartAC({product: item}))}/>
             </ProductItem>
             }
-            keyExtractor={(item) => item.id}/>
+            keyExtractor={(item) => item.id}
+            onRefresh={loadProducts}
+            refreshing={isrRefreshing}
+        />
     );
 };
 

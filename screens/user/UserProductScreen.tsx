@@ -18,8 +18,6 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
     const userProducts = useAppSelector(state => state.productsReducer.userProducts)
     const navigation = useAppNavigation()
     const dispatch = useAppDispatch()
-
-
     useLayoutEffect(() => {
         navigation.setOptions(
             {

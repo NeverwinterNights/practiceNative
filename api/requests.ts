@@ -1,4 +1,5 @@
 import axios from "axios";
+import {ModifiedCartItems} from "../types/types";
 
 const instance = axios.create({
     baseURL: "https://native-36fa9-default-rtdb.europe-west1.firebasedatabase.app/",
@@ -31,6 +32,18 @@ export const apiRequests = {
     },
     deleteProd(id: string) {
         return instance.delete(`/products/${id}.json`, {
+            headers: {},
+        })
+    },
+    createOrder(cartItem: ModifiedCartItems[],totalAmount: number,  date: string) {
+        return instance.post("/orders/u1.json", {
+            cartItem,
+            totalAmount,
+            date: new Date().toString()
+        })
+    },
+    getOrders(){
+        return instance.get("/orders/u1.json", {
             headers: {},
         })
     }
