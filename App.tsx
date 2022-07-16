@@ -7,6 +7,11 @@ import {Main} from "./components/Main";
 import * as Font from "expo-font"
 import {useCallback, useEffect, useState} from "react";
 import * as SplashScreen from 'expo-splash-screen'
+import "./firebase"
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
+
+
 
 export default function App() {
     const [isLoaded, setIsLoaded] = useState(false);

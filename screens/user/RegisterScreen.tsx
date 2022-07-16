@@ -1,59 +1,58 @@
 import React from 'react';
-import {Alert, Button, KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
-import {Formik, FormikHelpers, FormikValues} from 'formik';
-import {AppText} from "../../components/AppText";
-import {AppFormField} from "../../components/form/AppFormField";
+import {Alert, Button, KeyboardAvoidingView, LogBox, ScrollView, StyleSheet, View} from 'react-native';
+import {Formik, FormikHelpers, FormikValues} from "formik";
+
 import Colors from "../../constants/Colors";
 import * as Yup from "yup";
-import {CardWrapper} from "../../components/UI/CardWrapper";
-import {LinearGradient} from 'expo-linear-gradient';
-import {AuthNavigatorStackParamList, useAppNavigation} from "../../navigation/types";
+import {LinearGradient} from "expo-linear-gradient";
+
 import {useAppDispatch} from "../../store/store";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {NavigationProp, useNavigation} from "@react-navigation/native";
-import { LogBox } from 'react-native';
+import {createUserWithEmailAndPassword, getAuth} from "firebase/auth";
+import {CardWrapper} from '../../components/UI/CardWrapper';
+import {AppFormField} from "../../components/form/AppFormField";
+import {AppText} from "../../components/AppText";
 import {setUserAC} from "../../store/authReducer";
+import {useAppNavigation} from "../../navigation/types";
+
 LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
 
-type AuthScreenPropsType = {}
-
+type RegisterPropsType = {}
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
-    password: Yup.string().required().min(5).max(10).label("Password"),
+    password: Yup.string().required().min(6).max(10).label("Password"),
 });
 
-// export const useAppNavigation2 = () => useNavigation<NavigationProp<AuthNavigatorStackParamList>>()
 
-export const AuthScreen = ({}: AuthScreenPropsType) => {
-    const navigation = useAppNavigation()
+export const RegisterScreen = ({}: RegisterPropsType) => {
     const dispatch = useAppDispatch()
     const auth = getAuth();
+    const navigation = useAppNavigation()
 
-    const submit = (values: FormikValues, {resetForm}: FormikHelpers<any>) => {
+
+    const submit = async (values: FormikValues, {resetForm}: FormikHelpers<any>) => {
         // console.log(values);
         // resetForm()
         const auth = getAuth();
-        signInWithEmailAndPassword(auth, values.email, values.password)
-            .then((res)=> {
+        createUserWithEmailAndPassword(auth, values.email, values.password)
+            .then((res) => {
                 const response: any = res.user.toJSON()
                 dispatch(setUserAC({
                     email: res.user.email,
                     id: res.user.uid,
                     token: response.stsTokenManager.accessToken
                 }))
-                console.log("accessToken", response.stsTokenManager.accessToken);
-                console.log("refreshToken", res.user.refreshToken);
                 navigation.navigate("DrawerNavigator", {
                     screen: "ShopNavigator",
                     params: {screen: "ProductOverviewScreen"}
                 })
             })
-            .catch((err)=> {
+            .catch((err) => {
                 Alert.alert(err.message)
             })
-    }
 
+
+    }
 
     return (
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-90} style={styles.container}>
@@ -91,12 +90,10 @@ export const AuthScreen = ({}: AuthScreenPropsType) => {
                                         </View>
                                         <View style={styles.button}>
                                             <Button color={Colors.primary} onPress={() => handleSubmit()}
-                                                    title={"Login"}/>
+                                                    title={"Register"}/>
                                         </View>
 
-                                        <View style={styles.button}>
-                                            <Button color={Colors.accent} onPress={() => navigation.navigate("AuthNavigator", {screen:"RegisterScreen"} )} title={"Sign Up"}/>
-                                        </View>
+
                                     </>
                                 )}
                         </Formik>
@@ -116,7 +113,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    button:{marginTop:10},
+    button: {marginTop: 10},
 
     cardCont: {
         width: "80%",

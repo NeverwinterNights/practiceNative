@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator()
 
 
 export const MainNavigator = () => (
-    <Stack.Navigator screenOptions={{
+    <Stack.Navigator initialRouteName={"AuthNavigator"} screenOptions={{
         headerStyle: {
             backgroundColor: Colors.primary
         },

@@ -1,7 +1,6 @@
 import {NavigationProp, NavigatorScreenParams, useNavigation} from "@react-navigation/native";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
-
-
+import {RegisterScreen} from "../screens/user/RegisterScreen";
 
 
 export type OrderNavigatorStackParamList = {
@@ -17,6 +16,7 @@ export type UserNavigatorStackParamList = {
 
 export type AuthNavigatorStackParamList = {
     AuthScreen: undefined
+    RegisterScreen: undefined
 }
 export type ShopNavigatorStackParamList = {
     ProductOverviewScreen: undefined
@@ -50,3 +50,4 @@ export type EditProductScreenProps = NativeStackScreenProps<UserNavigatorStackPa
 //export const useAppNavigation = () => useNavigation<NavigationProp<DrawerNavigatorStackParamList>>() // без
 // авторизации
 export const useAppNavigation = () => useNavigation<NavigationProp<MainNavigatorStackParamList>>()
+// export const useAppNavigation = () => useNavigation<NavigationProp<AuthNavigatorStackParamList>>()

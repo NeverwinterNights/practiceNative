@@ -5,12 +5,14 @@ import {productsReducer} from "./productsReducer";
 import {cartReducer} from "./cartReducer";
 import {ordersReducer} from "./ordersReducer";
 import {appReducer} from "./appReducer";
+import {authReducer} from "./authReducer";
 
 const rootReducer = combineReducers({
     productsReducer: productsReducer,
     cartReducer: cartReducer,
     ordersReducer: ordersReducer,
-    appReducer:appReducer
+    appReducer:appReducer,
+    authReducer:authReducer
 })
 
 

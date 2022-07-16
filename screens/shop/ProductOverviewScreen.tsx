@@ -17,6 +17,9 @@ export const ProductOverviewScreen = () => {
     const products = useAppSelector(state => state.productsReducer.availableProducts)
     const dispatch = useAppDispatch()
 
+
+
+
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isrRefreshing, setIsRefreshing] = useState(false);
