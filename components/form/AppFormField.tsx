@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TextInput, TextInputProps} from 'react-native';
+import {TextInput, TextInputProps, View} from 'react-native';
 
 import {ErrorMessages} from "./ErrorMessages";
 import {useFormikContext} from "formik";
@@ -29,7 +29,10 @@ export const AppFormField = ({name, width, editedProducts, ...restProps}: AppFor
                 value={values[name]}
                 {...restProps}
             />
-            {touched[name] && <ErrorMessages error={errors[name]}/>}
+            <View style={{width:"100%", height:20,}}>
+                {touched[name] && <ErrorMessages error={errors[name]}/>}
+            </View>
+
         </>
     );
 };

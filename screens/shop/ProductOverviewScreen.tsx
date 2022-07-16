@@ -71,7 +71,10 @@ export const ProductOverviewScreen = () => {
                 headerRight: () => (
                     <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                         <Item title={"Cart"} iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-                              onPress={() => navigation.navigate('ShopNavigator', {screen: 'CartScreen'})}/>
+                              onPress={() => navigation.navigate("DrawerNavigator", {
+                                  screen: 'ShopNavigator',
+                                  params: {screen: 'CartScreen'}
+                              })}/>
                         {count > 0 && <View style={styles.badge}><Text style={styles.text}>{count}</Text></View>}
                     </HeaderButtons>
                 ),
@@ -86,10 +89,12 @@ export const ProductOverviewScreen = () => {
 
 
     const selectItemHandler = (id: string, title: string) => {
-        navigation.navigate('ShopNavigator', {
-            screen: 'ProductDetailScreen', params: {
-                productID: id,
-                productTitle: title
+        navigation.navigate("DrawerNavigator", {
+            screen: 'ShopNavigator', params: {
+                screen: 'ProductDetailScreen', params: {
+                    productID: id,
+                    productTitle: title
+                }
             }
         })
     }

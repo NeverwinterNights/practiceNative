@@ -15,9 +15,8 @@ export const ErrorMessages = ({error}: ErrorMessagesPropsType) => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     error: {
-        color: "red"
+        color: "red",
     }
 });

@@ -2,12 +2,7 @@ import {NavigationProp, NavigatorScreenParams, useNavigation} from "@react-navig
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 
 
-export type ShopNavigatorStackParamList = {
-    ProductOverviewScreen: undefined
-    ProductDetailScreen: { productID: string, productTitle: string }
-    CartScreen: undefined
 
-}
 
 export type OrderNavigatorStackParamList = {
     OrdersScreen: undefined
@@ -20,6 +15,15 @@ export type UserNavigatorStackParamList = {
 
 }
 
+export type AuthNavigatorStackParamList = {
+    AuthScreen: undefined
+}
+export type ShopNavigatorStackParamList = {
+    ProductOverviewScreen: undefined
+    ProductDetailScreen: { productID: string, productTitle: string }
+    CartScreen: undefined
+}
+
 
 export type DrawerNavigatorStackParamList = {
     ShopNavigator: NavigatorScreenParams<ShopNavigatorStackParamList>
@@ -28,16 +32,21 @@ export type DrawerNavigatorStackParamList = {
 }
 
 
-export type ProductDetailScreenProps = NativeStackScreenProps<ShopNavigatorStackParamList, 'ProductDetailScreen'>;
+export type MainNavigatorStackParamList = {
+    DrawerNavigator: NavigatorScreenParams<DrawerNavigatorStackParamList>
+    AuthNavigator: NavigatorScreenParams<AuthNavigatorStackParamList>
+}
 
+
+export type ProductDetailScreenProps = NativeStackScreenProps<ShopNavigatorStackParamList, 'ProductDetailScreen'>;
 
 // export type NavigationUseType = NavigationProp<ShopNavigatorStackParamList>
 // export type NavigationUseType = NavigationProp<DrawerNavigatorStackParamList>
-
-
 
 export type EditProductScreenProps = NativeStackScreenProps<UserNavigatorStackParamList, 'EditProductScreen'>;
 
 
 // export const useAppNavigation = () => useNavigation<NavigationUseType>()
-export const useAppNavigation = () => useNavigation<NavigationProp<DrawerNavigatorStackParamList>>()
+//export const useAppNavigation = () => useNavigation<NavigationProp<DrawerNavigatorStackParamList>>() // без
+// авторизации
+export const useAppNavigation = () => useNavigation<NavigationProp<MainNavigatorStackParamList>>()

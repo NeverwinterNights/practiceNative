@@ -30,7 +30,7 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
                 headerRight: () => (
                     <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                         <Item title={"Add"} iconName={Platform.OS === "android" ? "md-create" : "ios-create"}
-                              onPress={() => navigation.navigate("UserNavigator", {screen: "EditProductScreen"})}/>
+                              onPress={() => navigation.navigate("DrawerNavigator", {screen:"UserNavigator", params:{screen: "EditProductScreen"}})}/>
                     </HeaderButtons>
                 )
             });
@@ -51,7 +51,7 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
 
 
     const editProductScreen = (id: string) => {
-        navigation.navigate("UserNavigator", {screen: "EditProductScreen", params: {productID: id}})
+        navigation.navigate("DrawerNavigator", {screen:"UserNavigator", params:{screen: "EditProductScreen", params: {productID: id}}})
     }
 
     return (

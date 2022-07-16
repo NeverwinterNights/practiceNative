@@ -6,7 +6,7 @@ import {useAppDispatch, useAppSelector} from "../../store/store";
 import {EditProductScreenProps, useAppNavigation} from "../../navigation/types";
 import {FormScreen} from "../../components/form/FormScreen";
 import {FormikHelpers, FormikValues} from "formik";
-import {createProductTC, updateProductTC} from "../../store/productsReducer";
+import {createProductAC, createProductTC, updateProductTC} from "../../store/productsReducer";
 import Colors from "../../constants/Colors";
 
 
