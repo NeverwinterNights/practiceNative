@@ -1,5 +1,5 @@
-import React from 'react';
-import {Alert, Button, KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
+import React, {useLayoutEffect, useState} from 'react';
+import {Alert, Button, KeyboardAvoidingView, LogBox, ScrollView, StyleSheet, View} from 'react-native';
 import {Formik, FormikHelpers, FormikValues} from 'formik';
 import {AppText} from "../../components/AppText";
 import {AppFormField} from "../../components/form/AppFormField";
@@ -7,13 +7,13 @@ import Colors from "../../constants/Colors";
 import * as Yup from "yup";
 import {CardWrapper} from "../../components/UI/CardWrapper";
 import {LinearGradient} from 'expo-linear-gradient';
-import {AuthNavigatorStackParamList, useAppNavigation} from "../../navigation/types";
+import {useAppNavigation} from "../../navigation/types";
 import {useAppDispatch} from "../../store/store";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {NavigationProp, useNavigation} from "@react-navigation/native";
-import { LogBox } from 'react-native';
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import {setUserAC} from "../../store/authReducer";
-LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
+import {useAuth2} from "../../hooks/useAuth";
+
+LogBox.ignoreLogs(['Warning: AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from \'@react-native-async-storage/async-storage\' instead of \'react-native\'.']);
 
 type AuthScreenPropsType = {}
 
@@ -29,27 +29,41 @@ export const AuthScreen = ({}: AuthScreenPropsType) => {
     const navigation = useAppNavigation()
     const dispatch = useAppDispatch()
     const auth = getAuth();
+    const [isRegistrationMode, setIsRegistrationMode] = useState(false);
+
+    const {user} = useAuth2()
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: isRegistrationMode ? "Register" : "Login"
+        });
+    }, [navigation, isRegistrationMode]);
+
+console.log("user", user);
 
     const submit = (values: FormikValues, {resetForm}: FormikHelpers<any>) => {
         // console.log(values);
         // resetForm()
+
+        let task = isRegistrationMode ? createUserWithEmailAndPassword : signInWithEmailAndPassword
+
         const auth = getAuth();
-        signInWithEmailAndPassword(auth, values.email, values.password)
-            .then((res)=> {
+        task(auth, values.email, values.password)
+            .then((res) => {
                 const response: any = res.user.toJSON()
                 dispatch(setUserAC({
                     email: res.user.email,
                     id: res.user.uid,
                     token: response.stsTokenManager.accessToken
                 }))
-                console.log("accessToken", response.stsTokenManager.accessToken);
-                console.log("refreshToken", res.user.refreshToken);
-                navigation.navigate("DrawerNavigator", {
-                    screen: "ShopNavigator",
-                    params: {screen: "ProductOverviewScreen"}
-                })
+                // console.log("accessToken", response.stsTokenManager.accessToken);
+                // console.log("refreshToken", res.user.refreshToken);
+                // navigation.navigate("DrawerNavigator", {
+                //     screen: "ShopNavigator",
+                //     params: {screen: "ProductOverviewScreen"}
+                // })
             })
-            .catch((err)=> {
+            .catch((err) => {
                 Alert.alert(err.message)
             })
     }
@@ -91,11 +105,14 @@ export const AuthScreen = ({}: AuthScreenPropsType) => {
                                         </View>
                                         <View style={styles.button}>
                                             <Button color={Colors.primary} onPress={() => handleSubmit()}
-                                                    title={"Login"}/>
+                                                    title={isRegistrationMode ? "Registration" : "Login"}/>
                                         </View>
 
                                         <View style={styles.button}>
-                                            <Button color={Colors.accent} onPress={() => navigation.navigate("AuthNavigator", {screen:"RegisterScreen"} )} title={"Sign Up"}/>
+                                            <Button color={Colors.accent}
+                                                // onPress={() => navigation.navigate("AuthNavigator", {screen: "RegisterScreen"})}
+                                                    onPress={() => setIsRegistrationMode((prevState) => !prevState)}
+                                                    title={isRegistrationMode ? "Switch to Login" : "Switch to Registration"}/>
                                         </View>
                                     </>
                                 )}
@@ -116,7 +133,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    button:{marginTop:10},
+    button: {marginTop: 10},
 
     cardCont: {
         width: "80%",

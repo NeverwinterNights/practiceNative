@@ -16,7 +16,7 @@ export type UserNavigatorStackParamList = {
 
 export type AuthNavigatorStackParamList = {
     AuthScreen: undefined
-    RegisterScreen: undefined
+    // RegisterScreen: undefined
 }
 export type ShopNavigatorStackParamList = {
     ProductOverviewScreen: undefined

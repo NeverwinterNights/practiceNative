@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, View} from 'react-native';
+import {LogBox, StyleSheet, View} from 'react-native';
 import {Provider} from "react-redux";
 import {store} from "./store/store";
 import {NavigationContainer} from "@react-navigation/native";
@@ -7,11 +7,15 @@ import {Main} from "./components/Main";
 import * as Font from "expo-font"
 import {useCallback, useEffect, useState} from "react";
 import * as SplashScreen from 'expo-splash-screen'
-import "./firebase"
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['Warning: Async Storage has been extracted from react-native core']);
+// import "./firebase"
+import {initializeApp} from 'firebase/app';
+import {firebaseConfig} from "./firebase";
+import {AuthProvider} from "./providers/AuthProvider";
+
+LogBox.ignoreLogs(['Warning: AsyncStorage has been extracted from react-native core']);
 
 
+const app = initializeApp(firebaseConfig);
 
 export default function App() {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -54,8 +58,10 @@ export default function App() {
         <Provider store={store}>
             <View onLayout={onLayoutRootView} style={styles.container}>
                 <NavigationContainer>
-                    <StatusBar style="auto"/>
-                    <Main/>
+                    <AuthProvider>
+                        <StatusBar style="auto"/>
+                        <Main/>
+                    </AuthProvider>
                 </NavigationContainer>
 
             </View>
