@@ -16,7 +16,7 @@ export const MainNavigator = () => (
         },
         headerTintColor: Colors.white
     }}>
-        <Stack.Screen options={{headerShown: false}} name="AuthNavigator" component={AuthNavigator}/>
+        {/*<Stack.Screen options={{headerShown: false}} name="AuthNavigator" component={AuthNavigator}/>*/}
         <Stack.Screen options={{headerShown: false}} name="DrawerNavigator" component={DrawerNavigator}/>
     </Stack.Navigator>
 )

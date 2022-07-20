@@ -1,10 +1,10 @@
 import {createAction, createSlice} from "@reduxjs/toolkit";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type initialStateType = {
-    email:  string | null
-    token:  string | null
-    id: string | null
+    email: string | null | undefined
+    token: string | null | undefined
+    id: string | null | undefined
 }
 
 
@@ -14,7 +14,7 @@ const initialState: initialStateType = {
     id: null
 }
 
-export const setUserAC = createAction<{ email: string | null, token: string | null, id: string | null, }>("auth/setUserAC")
+export const setUserAC = createAction<{ email: string | null | undefined, token: string | null | undefined, id: string | null | undefined, }>("auth/setUserAC")
 export const removeUserAC = createAction("auth/removeUserAC")
 
 

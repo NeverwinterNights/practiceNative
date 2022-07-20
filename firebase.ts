@@ -3,7 +3,11 @@
 
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {getFirestore} from "@firebase/firestore"
-
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import {
+     initializeAuth,
+     getReactNativePersistence
+ } from 'firebase/auth/react-native';
 
 // Initialize Firebase
 export const firebaseConfig = {
@@ -18,11 +22,7 @@ export const firebaseConfig = {
 };
 
 
- import AsyncStorage from '@react-native-async-storage/async-storage';
- import {
-     initializeAuth,
-     getReactNativePersistence
- } from 'firebase/auth/react-native';
+
 
  // add firebase config here
 

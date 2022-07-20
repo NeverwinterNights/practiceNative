@@ -15,35 +15,39 @@ export const apiRequests = {
             headers: {},
         })
     },
-    createProd(title: string, description: string, imageUrl: string, price: number) {
-        return instance.post("/products.json", {
+    createProd(title: string, description: string, imageUrl: string, price: number, token: string | null | undefined, ownerID: string | null | undefined) {
+        return instance.post(`/products.json?auth=${token}`, {
             title,
             description,
             imageUrl,
-            price
+            price,
+            ownerID
         })
     },
-    updateProd(id: string, title: string, description: string, imageUrl: string) {
-        return instance.patch(`/products/${id}.json`, {
+    updateProd(id: string, title: string, description: string, imageUrl: string, token: string | null | undefined) {
+        return instance.patch(`/products/${id}.json?auth=${token}`, {
             title,
             description,
             imageUrl
         })
     },
-    deleteProd(id: string) {
-        return instance.delete(`/products/${id}.json`, {
+    deleteProd(id: string, token: string | null | undefined) {
+        return instance.delete(`/products/${id}.json?auth=${token}`, {
             headers: {},
         })
     },
-    createOrder(cartItem: ModifiedCartItems[],totalAmount: number,  date: string) {
-        return instance.post("/orders/u1.json", {
+    // createOrder(cartItem: ModifiedCartItems[], totalAmount: number, date: string, token: string | null | undefined, userID: string | null | undefined) {
+    createOrder(cartItem: ModifiedCartItems[], totalAmount: number, date: string, token: string | null | undefined, userID: string | null | undefined) {
+        return instance.post(`/orders/${userID}.json?auth=${token}`, {
             cartItem,
             totalAmount,
             date: new Date().toString()
         })
     },
-    getOrders(){
-        return instance.get("/orders/u1.json", {
+    // getOrders(userID: string | null | undefined) {
+    getOrders(userID: string | null | undefined) {
+        console.log(userID);
+        return instance.get(`/orders/${userID}.json`, {
             headers: {},
         })
     }

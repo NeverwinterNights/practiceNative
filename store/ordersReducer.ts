@@ -1,8 +1,9 @@
 import {createAction, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {Order} from "../models/order";
-import {ModifiedCartItems} from "../types/types";
+import {ModifiedCartItems, OrdersType} from "../types/types";
 import {apiRequests} from "../api/requests";
 import {setIsLoadingAC} from "./appReducer";
+import {RootState} from "./store";
 
 
 type OrderType = {
@@ -27,21 +28,21 @@ export const addOrderAC = createAction<{ cartItem: ModifiedCartItems[], totalAmo
 // export const setOrdersAC = createAction<{ orders:OrderType[] }>("order/setOrdersAC")
 
 
-export const createOrderTC = createAsyncThunk("order/createOrderTC",
-    async (param: { cartItem: ModifiedCartItems[], totalAmount: number }, {dispatch}) => {
+export const createOrderTC = createAsyncThunk<void, { cartItem: ModifiedCartItems[], totalAmount: number }, { state: RootState }>("order/createOrderTC",
+    async (param, {dispatch, getState}) => {
         dispatch(setIsLoadingAC({value: true}))
         const date = new Date()
 
-        const response = await apiRequests.createOrder(param.cartItem, param.totalAmount, date.toString())
+        const response = await apiRequests.createOrder(param.cartItem, param.totalAmount, date.toString(), getState().authReducer.token, getState().authReducer.id)
         dispatch(addOrderAC({cartItem: param.cartItem, totalAmount: param.totalAmount, id: response.data.name, date}))
         dispatch(setIsLoadingAC({value: false}))
     })
 
 
-export const setOrdersTC = createAsyncThunk("order/setOrderTC",
-    async (param, {dispatch}) => {
+export const setOrdersTC = createAsyncThunk<OrdersType, void, { state: RootState }>("order/setOrderTC",
+    async (param, {dispatch, getState}) => {
         dispatch(setIsLoadingAC({value: true}))
-        const response = await apiRequests.getOrders()
+        const response = await apiRequests.getOrders(getState().authReducer.id)
         dispatch(setIsLoadingAC({value: false}))
         return response.data
     })
@@ -58,6 +59,7 @@ const slice = createSlice({
                 state.orders = [...state.orders, newOrder]
             })
             .addCase(setOrdersTC.fulfilled, (state, action) => {
+                state.orders=[]
                 const response = action.payload
                 const ordersFromServer: OrderType[] = []
                 for (const key in response) {

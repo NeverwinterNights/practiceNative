@@ -1,7 +1,7 @@
 import {StatusBar} from 'expo-status-bar';
 import {LogBox, StyleSheet, View} from 'react-native';
 import {Provider} from "react-redux";
-import {store} from "./store/store";
+import {store, useAppSelector} from "./store/store";
 import {NavigationContainer} from "@react-navigation/native";
 import {Main} from "./components/Main";
 import * as Font from "expo-font"
@@ -52,6 +52,7 @@ export default function App() {
     if (!isLoaded) {
         return null;
     }
+
 
 
     return (

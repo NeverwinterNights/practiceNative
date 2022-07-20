@@ -8,6 +8,7 @@ import {CustomHeaderButton} from "../../components/UI/CustomHeaderButton";
 import {DrawerActions} from "@react-navigation/native";
 import Colors from "../../constants/Colors";
 import {deleteProductAC, deleteProductTC} from "../../store/productsReducer";
+import {AppText} from "../../components/AppText";
 
 type UserProductScreenPropsType = {}
 
@@ -30,7 +31,10 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
                 headerRight: () => (
                     <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                         <Item title={"Add"} iconName={Platform.OS === "android" ? "md-create" : "ios-create"}
-                              onPress={() => navigation.navigate("DrawerNavigator", {screen:"UserNavigator", params:{screen: "EditProductScreen"}})}/>
+                              onPress={() => navigation.navigate("DrawerNavigator", {
+                                  screen: "UserNavigator",
+                                  params: {screen: "EditProductScreen"}
+                              })}/>
                     </HeaderButtons>
                 )
             });
@@ -51,7 +55,20 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
 
 
     const editProductScreen = (id: string) => {
-        navigation.navigate("DrawerNavigator", {screen:"UserNavigator", params:{screen: "EditProductScreen", params: {productID: id}}})
+        navigation.navigate("DrawerNavigator", {
+            screen: "UserNavigator",
+            params: {screen: "EditProductScreen", params: {productID: id}}
+        })
+    }
+
+    if (userProducts.length === 0) {
+        return <view style={{
+            flex: 1, alignItems: "center",
+            justifyContent: "center",
+        }}>
+            <AppText>No products, add your own products</AppText>
+        </view>
+
     }
 
     return (

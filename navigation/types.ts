@@ -1,6 +1,6 @@
 import {NavigationProp, NavigatorScreenParams, useNavigation} from "@react-navigation/native";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import {RegisterScreen} from "../screens/user/RegisterScreen";
+import {LogOutScreen} from "../screens/user/LogOutScreen";
 
 
 export type OrderNavigatorStackParamList = {
@@ -18,6 +18,13 @@ export type AuthNavigatorStackParamList = {
     AuthScreen: undefined
     // RegisterScreen: undefined
 }
+
+export type LogOutNavigatorStackParamList = {
+    LogOutScreen: undefined
+    // RegisterScreen: undefined
+}
+
+
 export type ShopNavigatorStackParamList = {
     ProductOverviewScreen: undefined
     ProductDetailScreen: { productID: string, productTitle: string }
@@ -29,12 +36,13 @@ export type DrawerNavigatorStackParamList = {
     ShopNavigator: NavigatorScreenParams<ShopNavigatorStackParamList>
     OrdersNavigator: NavigatorScreenParams<OrderNavigatorStackParamList>
     UserNavigator: NavigatorScreenParams<UserNavigatorStackParamList>
+    LogOutNavigator: NavigatorScreenParams<LogOutNavigatorStackParamList>
 }
 
 
 export type MainNavigatorStackParamList = {
     DrawerNavigator: NavigatorScreenParams<DrawerNavigatorStackParamList>
-    AuthNavigator: NavigatorScreenParams<AuthNavigatorStackParamList>
+    // AuthNavigator: NavigatorScreenParams<AuthNavigatorStackParamList>
 }
 
 

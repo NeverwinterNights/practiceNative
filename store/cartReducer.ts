@@ -77,8 +77,6 @@ const slice = createSlice({
                     delete state.items[action.payload]
                     state.totalAmount = state.totalAmount - totalSum
                 }
-
-
             })
     },
 })

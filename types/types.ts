@@ -1,6 +1,6 @@
 export type ProductType = {
     id: string,
-    ownerId: string,
+    ownerId: string | null | undefined,
     title: string,
     imageUrl: string,
     description: string,
@@ -16,3 +16,12 @@ export type ModifiedCartItems = {
     quantity:number,
     sum:number,
 }
+
+export type OrdersType = {
+    [key:string]: {
+        "cartItem":ModifiedCartItems[],
+        date: string
+        totalAmount:number
+    }
+}
+
