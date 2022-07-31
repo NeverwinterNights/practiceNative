@@ -1,22 +1,19 @@
 import React, {useLayoutEffect} from 'react';
-import {Keyboard, Platform, StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import {useAppNavigation} from "../../navigation/types";
 import {useAppDispatch} from "../../store/store";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import {CustomHeaderButton} from "../UI/CustomHeaderButton";
-import {FormikValues, useFormikContext} from "formik";
+import {useFormikContext} from "formik";
 import {AppText} from "../AppText";
 import {AppFormField} from "./AppFormField";
 import {ProductType} from "../../types/types";
-import {createProductAC, updateProductAC} from "../../store/productsReducer";
 
 
 type FormScreenPropsType = {
     productID: string | undefined
     editedProducts: ProductType | undefined
 }
-
-
 
 
 export const FormScreen = ({productID, editedProducts}: FormScreenPropsType) => {
@@ -47,8 +44,6 @@ export const FormScreen = ({productID, editedProducts}: FormScreenPropsType) => 
                 )
             });
     }, [navigation, dispatch, productID]);
-
-
 
 
     const subForm = () => {

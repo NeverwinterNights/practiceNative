@@ -4,6 +4,7 @@ import {ModifiedCartItems, OrdersType} from "../types/types";
 import {apiRequests} from "../api/requests";
 import {setIsLoadingAC} from "./appReducer";
 import {RootState} from "./store";
+import {logOutAC} from "./authReducer";
 
 
 type OrderType = {
@@ -54,12 +55,14 @@ const slice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(logOutAC, (state, action) => {
+                state.orders = []
+            })
             .addCase(addOrderAC, (state, action) => {
                 const newOrder = new Order(action.payload.id, action.payload.cartItem, action.payload.totalAmount, action.payload.date)
                 state.orders = [...state.orders, newOrder]
             })
             .addCase(setOrdersTC.fulfilled, (state, action) => {
-                state.orders=[]
                 const response = action.payload
                 const ordersFromServer: OrderType[] = []
                 for (const key in response) {

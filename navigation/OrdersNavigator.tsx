@@ -3,7 +3,7 @@ import {ProductOverviewScreen} from "../screens/shop/ProductOverviewScreen";
 import Colors from "../constants/Colors";
 import {ProductDetailScreen} from "../screens/shop/ProductDetailScreen";
 import {CartScreen} from "../screens/shop/CartScreen";
-import {OrdersScreen} from "../screens/shop/OrdersScreen";
+import {OrdersScreen, OrdersScreenOptions} from "../screens/shop/OrdersScreen";
 
 const Stack = createNativeStackNavigator()
 
@@ -19,7 +19,8 @@ export const OrderNavigator = () => (
         },
         headerTintColor: Colors.white
     }}>
-        <Stack.Screen options={{headerTitle: "Your Orders", headerTitleAlign: "center"}} name="OrdersScreen" component={OrdersScreen}/>
+        {/*<Stack.Screen options={{headerTitle: "Your Orders", headerTitleAlign: "center"}} name="OrdersScreen" component={OrdersScreen}/>*/}
+        <Stack.Screen options={OrdersScreenOptions} name="OrdersScreen" component={OrdersScreen}/>
 
 
     </Stack.Navigator>

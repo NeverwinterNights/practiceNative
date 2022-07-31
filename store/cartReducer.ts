@@ -3,6 +3,7 @@ import {ProductType} from "../types/types";
 import {CartItem} from "../models/cartItem";
 import {addOrderAC} from "./ordersReducer";
 import {deleteProductAC} from "./productsReducer";
+import {logOutAC} from "./authReducer";
 
 
 type ItemType = {
@@ -16,16 +17,19 @@ type ItemType = {
 type initialStateType = {
     items: { [key: string]: ItemType },
     totalAmount: number
+    quantity: number | null
 }
 
 
 const initialState: initialStateType = {
     items: {} as { [key: string]: ItemType },
-    totalAmount: 0
+    totalAmount: 0,
+    quantity: null
 }
 
 export const addToCartAC = createAction<{ product: ProductType }>("cart/addToCartAC")
 export const removeFromCartAC = createAction<{ id: string }>("cart/removeFromCartAC")
+export const changeQuantityAC = createAction<{ value: number | null }>("cart/changeQuantityAC")
 
 
 const slice = createSlice({
@@ -34,6 +38,10 @@ const slice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(logOutAC, (state, action) => {
+                state.items = {}
+                state.totalAmount = 0
+            })
             .addCase(addToCartAC, (state, action) => {
                 const product: ProductType = action.payload.product
                 const price = action.payload.product.price
@@ -77,6 +85,9 @@ const slice = createSlice({
                     delete state.items[action.payload]
                     state.totalAmount = state.totalAmount - totalSum
                 }
+            })
+            .addCase(changeQuantityAC, (state, action) => {
+                state.quantity = action.payload.value
             })
     },
 })

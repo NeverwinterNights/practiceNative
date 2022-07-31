@@ -1,4 +1,5 @@
 import {createAction, createSlice} from "@reduxjs/toolkit";
+import {logOutAC} from "./authReducer";
 
 
 type initialStateType = {
@@ -28,7 +29,10 @@ const slice = createSlice({
             .addCase(setIsLoadingAC, (state, action) => {
                 state.isLoading = action.payload.value
             })
-
+            .addCase(logOutAC, (state, action) => {
+                state.isLoading = false
+                state.error = ""
+            })
     },
 })
 

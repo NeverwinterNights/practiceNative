@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect} from 'react';
+import React, {useEffect} from 'react';
 import {ActivityIndicator, FlatList, Platform, StyleSheet, View} from 'react-native';
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {AppText} from "../../components/AppText";
@@ -12,26 +12,40 @@ import Colors from "../../constants/Colors";
 
 type OrdersScreenPropsType = {}
 
+
+export const OrdersScreenOptions = ({navigation}: any) => {
+    return {
+        headerTitle: "Your Orders",
+        headerTitleAlign: "center" as const,
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+                      onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+            </HeaderButtons>
+        )
+    }
+}
+
 export const OrdersScreen = ({}: OrdersScreenPropsType) => {
     const navigation = useAppNavigation()
     const dispatch = useAppDispatch()
     const isLoading = useAppSelector(state => state.appReducer.isLoading)
 
-     const orders = useAppSelector(state => state.ordersReducer.orders)
+    const orders = useAppSelector(state => state.ordersReducer.orders)
 
-    useLayoutEffect(() => {
-        navigation.setOptions(
-            {
-                headerLeft: () => (
-                    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                        <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-                              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
-                    </HeaderButtons>
-                )
-            });
-    }, [navigation]);
+    // useLayoutEffect(() => {
+    //     navigation.setOptions(
+    //         {
+    //             headerLeft: () => (
+    //                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+    //                     <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+    //                           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+    //                 </HeaderButtons>
+    //             )
+    //         });
+    // }, [navigation]);
 
-    useEffect(()=> {
+    useEffect(() => {
         dispatch(setOrdersTC())
     }, [])
 

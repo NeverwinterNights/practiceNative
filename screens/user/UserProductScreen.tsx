@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from 'react';
-import {Alert, Button, FlatList, Platform} from 'react-native';
+import {Alert, Button, FlatList, Platform, View} from 'react-native';
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {ProductItem} from "../../components/shop/ProductItem";
 import {useAppNavigation} from "../../navigation/types";
@@ -10,7 +10,34 @@ import Colors from "../../constants/Colors";
 import {deleteProductAC, deleteProductTC} from "../../store/productsReducer";
 import {AppText} from "../../components/AppText";
 
+import {v1} from 'uuid';
+
+
+
 type UserProductScreenPropsType = {}
+
+
+export const UserProductScreenOptions = ({navigation}: any) => {
+    return {
+        headerTitle: "Your Product",
+        headerTitleAlign: "center" as const,
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+                      onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+            </HeaderButtons>
+        ),
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item title={"Add"} iconName={Platform.OS === "android" ? "md-create" : "ios-create"}
+                      onPress={() => navigation.navigate("DrawerNavigator", {
+                          screen: "UserNavigator",
+                          params: {screen: "EditProductScreen"}
+                      })}/>
+            </HeaderButtons>
+        )
+    }
+}
 
 
 export const UserProductScreen = ({}: UserProductScreenPropsType) => {
@@ -19,26 +46,26 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
     const userProducts = useAppSelector(state => state.productsReducer.userProducts)
     const navigation = useAppNavigation()
     const dispatch = useAppDispatch()
-    useLayoutEffect(() => {
-        navigation.setOptions(
-            {
-                headerLeft: () => (
-                    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                        <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-                              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
-                    </HeaderButtons>
-                ),
-                headerRight: () => (
-                    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                        <Item title={"Add"} iconName={Platform.OS === "android" ? "md-create" : "ios-create"}
-                              onPress={() => navigation.navigate("DrawerNavigator", {
-                                  screen: "UserNavigator",
-                                  params: {screen: "EditProductScreen"}
-                              })}/>
-                    </HeaderButtons>
-                )
-            });
-    }, [navigation]);
+    // useLayoutEffect(() => {
+    //     navigation.setOptions(
+    //         {
+    //             headerLeft: () => (
+    //                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+    //                     <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+    //                           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+    //                 </HeaderButtons>
+    //             ),
+    //             headerRight: () => (
+    //                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+    //                     <Item title={"Add"} iconName={Platform.OS === "android" ? "md-create" : "ios-create"}
+    //                           onPress={() => navigation.navigate("DrawerNavigator", {
+    //                               screen: "UserNavigator",
+    //                               params: {screen: "EditProductScreen"}
+    //                           })}/>
+    //                 </HeaderButtons>
+    //             )
+    //         });
+    // }, [navigation]);
 
 
     const deleteHandler = (id: string) => {
@@ -62,14 +89,16 @@ export const UserProductScreen = ({}: UserProductScreenPropsType) => {
     }
 
     if (userProducts.length === 0) {
-        return <view style={{
+        return <View style={{
             flex: 1, alignItems: "center",
             justifyContent: "center",
         }}>
             <AppText>No products, add your own products</AppText>
-        </view>
+        </View>
 
     }
+
+
 
     return (
         <FlatList data={userProducts} keyExtractor={(item) => item.id} renderItem={({item}) =>

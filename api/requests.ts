@@ -16,7 +16,9 @@ export const apiRequests = {
         })
     },
     createProd(title: string, description: string, imageUrl: string, price: number, token: string | null | undefined, ownerID: string | null | undefined) {
-        return instance.post(`/products.json?auth=${token}`, {
+
+       return instance.post(`/products.json?auth=${token}`, {
+       // return instance.post(`/products.json`, {
             title,
             description,
             imageUrl,
@@ -46,7 +48,6 @@ export const apiRequests = {
     },
     // getOrders(userID: string | null | undefined) {
     getOrders(userID: string | null | undefined) {
-        console.log(userID);
         return instance.get(`/orders/${userID}.json`, {
             headers: {},
         })

@@ -26,7 +26,8 @@ export type LogOutNavigatorStackParamList = {
 
 
 export type ShopNavigatorStackParamList = {
-    ProductOverviewScreen: undefined
+    // ProductOverviewScreen: undefined
+    ProductOverviewScreen: { count: number } | undefined
     ProductDetailScreen: { productID: string, productTitle: string }
     CartScreen: undefined
 }
@@ -36,7 +37,7 @@ export type DrawerNavigatorStackParamList = {
     ShopNavigator: NavigatorScreenParams<ShopNavigatorStackParamList>
     OrdersNavigator: NavigatorScreenParams<OrderNavigatorStackParamList>
     UserNavigator: NavigatorScreenParams<UserNavigatorStackParamList>
-    LogOutNavigator: NavigatorScreenParams<LogOutNavigatorStackParamList>
+
 }
 
 

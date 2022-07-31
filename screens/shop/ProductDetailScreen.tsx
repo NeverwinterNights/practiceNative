@@ -1,11 +1,23 @@
 import React, {useLayoutEffect} from 'react';
-import {Button, Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Button, Image, Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {AppText} from "../../components/AppText";
 import {ProductDetailScreenProps, useAppNavigation} from "../../navigation/types";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {ProductType} from "../../types/types";
 import Colors from "../../constants/Colors";
 import {addToCartAC} from "../../store/cartReducer";
+import {HeaderButtons, Item} from "react-navigation-header-buttons";
+import {CustomHeaderButton} from "../../components/UI/CustomHeaderButton";
+import {DrawerActions} from "@react-navigation/native";
+
+
+export const ProductDetailScreenOptions = ({navigation, route }: any) => {
+    return {
+        headerTitle: route.params.productTitle,
+        headerTitleAlign: "center" as const,
+    }
+}
+
 
 
 export const ProductDetailScreen = ({route}: ProductDetailScreenProps) => {
@@ -16,11 +28,11 @@ export const ProductDetailScreen = ({route}: ProductDetailScreenProps) => {
     const selectedProduct: ProductType | undefined = useAppSelector(state => state.productsReducer.availableProducts.find((product) => product.id === productID))
 
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerTitle: productTitle,
-        });
-    }, [navigation]);
+    // useLayoutEffect(() => {
+    //     navigation.setOptions({
+    //         headerTitle: productTitle,
+    //     });
+    // }, [navigation]);
 
 
     return (

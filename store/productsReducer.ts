@@ -5,6 +5,8 @@ import {apiRequests} from "../api/requests";
 import {setErrorAC, setIsLoadingAC} from "./appReducer";
 import {Alert} from "react-native";
 import {RootState} from "./store";
+import {logOutAC} from "./authReducer";
+import {updateBD, writeToBD} from "../firebase";
 
 
 type initialStateType = {
@@ -21,7 +23,7 @@ const initialState: initialStateType = {
 }
 
 export const deleteProductAC = createAction<string>("product/deleteProductAC")
-export const createProductAC = createAction<{ title: string, description: string, imageUrl: string, price: number, ownerID: string | null | undefined }>("product/createProductAC")
+export const createProductAC = createAction<{ title: string, description: string, imageUrl: string, id: string, price: number, ownerID: string | null | undefined }>("product/createProductAC")
 //export const createProductAC = createAction<{ title: string, description: string, imageUrl: string, price: number,
 // ownerID: string | null | undefined }>("product/createProductAC")
 
@@ -35,21 +37,26 @@ export const createProductTC = createAsyncThunk<{}, { title: string, description
             // 1 const res = await apiRequests.createProd(param.title, param.description, param.imageUrl, param.price,
             // getState().authReducer.token)
 
-            const res = await apiRequests.createProd(param.title, param.description, param.imageUrl, param.price, getState().authReducer.token, getState().authReducer.id)
+            /// const res = await apiRequests.createProd(param.title, param.description, param.imageUrl, param.price,
+            // getState().authReducer.token, getState().authReducer.id)
 
+
+            const res = writeToBD(param.title, param.description, param.imageUrl, param.price, getState().authReducer.token, getState().authReducer.id)
 
             // const res = await apiRequests.createProd(param.title, param.description, param.imageUrl, param.price,
             // getState().authReducer.token, getState().authReducer.id)
 
             dispatch(createProductAC({
                 title: param.title,
+                id: res,
                 description: param.description,
                 imageUrl: param.imageUrl,
                 price: Number(param.price),
                 ownerID: getState().authReducer.id
             }))
             dispatch(setIsLoadingAC({value: false}))
-            return {data: res.config.data, id: res.data.name};
+
+            // return {data: res.config.data, id: res.data.name};
         } catch (error) {
             dispatch(setIsLoadingAC({value: false}))
             dispatch(setErrorAC({value: error.message}))
@@ -65,10 +72,6 @@ export const fetchProductTC = createAsyncThunk<any, undefined, { state: RootStat
         const res = await apiRequests.fetchProducts()
         const ownerID = getState().authReducer.id
         return {data: res.data, ownerID}
-        // console.log("userID", userID);
-        // console.log(res.data);
-        // console.log("ownerID", ownerID);
-        // return res.data
     } catch (error) {
 
     }
@@ -79,16 +82,20 @@ export const updateProductTC = createAsyncThunk<void, { id: string, title: strin
         dispatch(setIsLoadingAC({value: true}))
         try {
             // await apiRequests.updateProd(param.id, param.title, param.description, param.imageUrl)
-            await apiRequests.updateProd(param.id, param.title, param.description, param.imageUrl, getState().authReducer.token)
+
+            // await apiRequests.updateProd(param.id, param.title, param.description, param.imageUrl,getState().authReducer.token)
+
             // await apiRequests.updateProd(param.id, param.title, param.description, param.imageUrl,
             // getState().authReducer.token)
 
+            updateBD(param.title, param.description, param.imageUrl, param.id)
             dispatch(updateProductAC({
                 id: param.id,
                 title: param.title,
                 description: param.description,
                 imageUrl: param.imageUrl
             }))
+            dispatch(setIsLoadingAC({value: false}))
 
         } catch (error) {
             dispatch(setIsLoadingAC({value: false}))
@@ -102,7 +109,6 @@ export const deleteProductTC = createAsyncThunk<void, { id: string }, { state: R
     async (param, {dispatch, getState}) => {
         try {
             await apiRequests.deleteProd(param.id, getState().authReducer.token)
-            // await apiRequests.deleteProd(param.id, getState().authReducer.token)
 
         } catch (error) {
 
@@ -115,13 +121,17 @@ const slice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(logOutAC, (state, action) => {
+                state.availableProducts = []
+                state.userProducts = []
+            })
             .addCase(deleteProductAC, (state, action) => {
                 state.userProducts = state.userProducts.filter((product) => product.id !== action.payload)
                 state.availableProducts = state.availableProducts.filter((product) => product.id !== action.payload)
             })
             .addCase(createProductAC, (state, action) => {
                 const newProduct = new Product(
-                    new Date().toString(),
+                    action.payload.id,
                     // "u1",
                     action.payload.ownerID,
                     action.payload.title,
@@ -154,7 +164,6 @@ const slice = createSlice({
                 const loadedProduct = []
                 const res = action.payload.data
                 const ownersID = action.payload.ownerID;
-
 
 
                 for (const key in res) {

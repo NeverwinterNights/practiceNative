@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Button, FlatList, Platform, StyleSheet, Text, View} from 'react-native';
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {ProductItem} from "../../components/shop/ProductItem";
-import {useAppNavigation} from "../../navigation/types";
+import {MainNavigatorStackParamList, useAppNavigation} from "../../navigation/types";
 import {addToCartAC} from "../../store/cartReducer";
 import {CustomHeaderButton} from "../../components/UI/CustomHeaderButton";
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -10,14 +10,53 @@ import {DrawerActions} from "@react-navigation/native";
 import Colors from '../../constants/Colors';
 import {fetchProductTC} from "../../store/productsReducer";
 import {AppText} from "../../components/AppText";
+import {DrawerNavigationProp} from "@react-navigation/drawer";
 
 
-export const ProductOverviewScreen = () => {
+type PropsType = {
+    navigation: DrawerNavigationProp<MainNavigatorStackParamList>
+}
+
+export const ProductOverviewScreenOptions = ({navigation, route}: any) => {
+    const count = route.params && route.params.count ? route.params.count : null;
+
+
+
+    console.log("route", route);
+    // const {count} = route.params
+
+    const quantity = useAppSelector(state => state.cartReducer.quantity)
+    return {
+        headerTitle: "All Products",
+        headerTitleAlign: "center" as const,
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item title={"Cart"} iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+                      onPress={() => navigation.navigate("DrawerNavigator", {
+                          screen: 'ShopNavigator',
+                          params: {screen: 'CartScreen'}
+                      })}/>
+
+                {count && <View style={styles.badge}><Text style={styles.text}>{count}</Text></View>}
+                {/*<View style={styles.badge}><Text style={styles.text}>{count}</Text></View>*/}
+
+            </HeaderButtons>
+        ),
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+                      onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+            </HeaderButtons>
+        )
+    }
+}
+
+
+export const ProductOverviewScreen = ({route}: any) => {
     const navigation = useAppNavigation()
     const products = useAppSelector(state => state.productsReducer.availableProducts)
     const dispatch = useAppDispatch()
-
-
+    const quantity = useAppSelector(state => state.cartReducer.quantity)
 
 
     const [count, setCount] = useState(0);
@@ -51,7 +90,6 @@ export const ProductOverviewScreen = () => {
 
 
     useEffect(() => {
-
         navigation.addListener("focus", loadProducts)
         return () => {
             navigation.removeListener("focus", loadProducts)
@@ -61,34 +99,52 @@ export const ProductOverviewScreen = () => {
     useEffect(() => {
         for (const key in productsInCart) {
             quantityProductsInCart = quantityProductsInCart + productsInCart[key].quantity
+            // dispatch(changeQuantityAC({value: quantityProductsInCart}))
             setCount(quantityProductsInCart)
+            // route.params.count = quantityProductsInCart ? quantityProductsInCart : null
         }
         if (Object.keys(productsInCart).length == 0) {
+            // dispatch(changeQuantityAC({value: null}))
+
             setCount(0)
+            // route.params.count = 0
         }
     }, [productsInCart])
 
-    useLayoutEffect(() => {
-        navigation.setOptions(
-            {
-                headerRight: () => (
-                    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                        <Item title={"Cart"} iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-                              onPress={() => navigation.navigate("DrawerNavigator", {
-                                  screen: 'ShopNavigator',
-                                  params: {screen: 'CartScreen'}
-                              })}/>
-                        {count > 0 && <View style={styles.badge}><Text style={styles.text}>{count}</Text></View>}
-                    </HeaderButtons>
-                ),
-                headerLeft: () => (
-                    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                        <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-                              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
-                    </HeaderButtons>
-                )
-            });
-    }, [navigation, count]);
+
+    useEffect(() => {
+
+            navigation.navigate("DrawerNavigator", {
+                screen: 'ShopNavigator',
+                params: {screen: 'ProductOverviewScreen', params: {count: count}}
+            })
+
+    }, [count]);
+
+
+    // useLayoutEffect(() => {
+    //     navigation.setOptions(
+    //         {
+    //             headerTitle: "All Products",
+    //             headerTitleAlign: "center",
+    //             headerRight: () => (
+    //                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+    //                     <Item title={"Cart"} iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+    //                           onPress={() => navigation.navigate("DrawerNavigator", {
+    //                               screen: 'ShopNavigator',
+    //                               params: {screen: 'CartScreen'}
+    //                           })}/>
+    //                     {count > 0 && <View style={styles.badge}><Text style={styles.text}>{count}</Text></View>}
+    //                 </HeaderButtons>
+    //             ),
+    //             headerLeft: () => (
+    //                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+    //                     <Item title={"Menu"} iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+    //                           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+    //                 </HeaderButtons>
+    //             )
+    //         });
+    // }, [navigation, count]);
 
 
     const selectItemHandler = (id: string, title: string) => {
@@ -158,6 +214,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         borderColor: Colors.white,
+
     },
     text: {
         color: Colors.white,

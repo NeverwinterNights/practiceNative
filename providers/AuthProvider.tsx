@@ -2,6 +2,8 @@ import React, {createContext, FC, useEffect, useMemo, useState} from "react";
 import {onAuthStateChanged, User} from "firebase/auth"
 import {Alert} from "react-native";
 import {authMy, login, logout, register} from "../firebase";
+import {useAppDispatch} from "../store/store";
+import {logOutAC} from "../store/authReducer";
 
 type ContextAuthType = {
     user: User | null
@@ -17,6 +19,9 @@ export const AuthProvider: FC = ({children}) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoadingInitial, setIsLoadingInitial] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useAppDispatch()
+
+
 
     const registerHandler = async (email: string, password: string) => {
         setIsLoading(true)
@@ -44,6 +49,7 @@ export const AuthProvider: FC = ({children}) => {
         setIsLoading(true)
         try {
             await logout()
+            dispatch(logOutAC()) // clear data after log out
         } catch (error: any) {
             Alert.alert("Error logOut", error)
         } finally {

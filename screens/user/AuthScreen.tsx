@@ -8,11 +8,9 @@ import * as Yup from "yup";
 import {CardWrapper} from "../../components/UI/CardWrapper";
 import {LinearGradient} from 'expo-linear-gradient';
 import {useAppNavigation} from "../../navigation/types";
-import {useAppDispatch} from "../../store/store";
 import {getAuth} from "firebase/auth";
 import {useAuth2} from "../../hooks/useAuth";
 import {SubmitButton} from "../../components/form/SubmitButton";
-import {setUserAC} from "../../store/authReducer";
 
 LogBox.ignoreLogs(['Warning: AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from \'@react-native-async-storage/async-storage\' instead of \'react-native\'.']);
 

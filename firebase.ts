@@ -1,13 +1,14 @@
- import {initializeApp} from 'firebase/app';
+import {initializeApp} from 'firebase/app';
 
 
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {getFirestore} from "@firebase/firestore"
- import AsyncStorage from '@react-native-async-storage/async-storage';
- import {
-     initializeAuth,
-     getReactNativePersistence
- } from 'firebase/auth/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getReactNativePersistence, initializeAuth} from 'firebase/auth/react-native';
+
+
+import {getDatabase, ref, set, update} from 'firebase/database'
+import 'react-native-get-random-values'
+import {v4 as uuid} from 'uuid'
 
 // Initialize Firebase
 export const firebaseConfig = {
@@ -22,30 +23,55 @@ export const firebaseConfig = {
 };
 
 
+// add firebase config here
 
+// initialize firebase app
+const app = initializeApp(firebaseConfig);
 
- // add firebase config here
+// initialize auth
+const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+});
 
- // initialize firebase app
- const app = initializeApp(firebaseConfig);
-
- // initialize auth
- const auth = initializeAuth(app, {
-     persistence: getReactNativePersistence(AsyncStorage)
- });
-
- // export { auth };
+// export { auth };
 
 
 // initializeApp(firebaseConfig);
 //
 //
- export const authMy = getAuth()
+export const authMy = getAuth()
 export const register = (email: string, password: string) => createUserWithEmailAndPassword(authMy, email, password)
 
 export const login = (email: string, password: string) => signInWithEmailAndPassword(authMy, email, password)
 
 export const logout = () => signOut(authMy)
 
-export const db = getFirestore()
+// export const db = getFirestore()
 
+
+//
+
+const db = getDatabase()
+export const writeToBD = (title: string, description: string, imageUrl: string, price: number, token: string | null | undefined, ownerID: string | null | undefined) => {
+    const id = uuid()
+    set(ref(db, `products/` + id), {
+        title,
+        description,
+        imageUrl,
+        price,
+        ownerID,
+        id: id
+    })
+    return id
+}
+
+
+export const updateBD = (title: string, description: string, imageUrl: string, id: string) => {
+
+    update(ref(db, `products/` + id), {
+        title,
+        description,
+        imageUrl,
+        id
+    })
+}
