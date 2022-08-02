@@ -22,7 +22,7 @@ export const ProductOverviewScreenOptions = ({navigation, route}: any) => {
 
 
 
-    console.log("route", route);
+
     // const {count} = route.params
 
     const quantity = useAppSelector(state => state.cartReducer.quantity)

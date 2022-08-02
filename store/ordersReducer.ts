@@ -70,7 +70,7 @@ const slice = createSlice({
                         new Order(key, response[key].cartItem, response[key].totalAmount, new Date(response[key].date))
                     )
                 }
-                state.orders = [...state.orders, ...ordersFromServer]
+                state.orders = [...ordersFromServer]
             })
     },
 })
