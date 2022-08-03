@@ -3,8 +3,9 @@ import {ProductOverviewScreen, ProductOverviewScreenOptions} from "../screens/sh
 import Colors from "../constants/Colors";
 import {ProductDetailScreen, ProductDetailScreenOptions} from "../screens/shop/ProductDetailScreen";
 import {CartScreen} from "../screens/shop/CartScreen";
+import {ShopNavigatorStackParamList} from "./types";
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator<ShopNavigatorStackParamList>()
 
 
 export const ShopNavigator = () => (

@@ -2,30 +2,41 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Button, FlatList, Platform, StyleSheet, Text, View} from 'react-native';
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {ProductItem} from "../../components/shop/ProductItem";
-import {MainNavigatorStackParamList, useAppNavigation} from "../../navigation/types";
-import {addToCartAC} from "../../store/cartReducer";
+import { useAppNavigation} from "../../navigation/types";
+import {addToCartAC, changeQuantityAC} from "../../store/cartReducer";
 import {CustomHeaderButton} from "../../components/UI/CustomHeaderButton";
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {DrawerActions} from "@react-navigation/native";
 import Colors from '../../constants/Colors';
 import {fetchProductTC} from "../../store/productsReducer";
 import {AppText} from "../../components/AppText";
-import {DrawerNavigationProp} from "@react-navigation/drawer";
 
-
-type PropsType = {
-    navigation: DrawerNavigationProp<MainNavigatorStackParamList>
+type RouteType = {
+    params: {
+        params: {
+            params: {
+                count: number
+            }
+        }
+    }
 }
 
-export const ProductOverviewScreenOptions = ({navigation, route}: any) => {
-    const count = route.params && route.params.count ? route.params.count : null;
+// type PropsType = {
+//     navigation: DrawerNavigationProp<MainNavigatorStackParamList>
+//     route:
+// }
+
+export const ProductOverviewScreenOptions = () => {
+
+     const count = useAppSelector(state => state.cartReducer.quantity)
+
+    // const routeEl = route as RouteType
+    //
+    // const count = routeEl.params &&  routeEl.params.params.params ? routeEl.params.params.params.count : null
 
 
 
-
-    // const {count} = route.params
-
-    const quantity = useAppSelector(state => state.cartReducer.quantity)
+    const navigation = useAppNavigation()
     return {
         headerTitle: "All Products",
         headerTitleAlign: "center" as const,
@@ -36,10 +47,8 @@ export const ProductOverviewScreenOptions = ({navigation, route}: any) => {
                           screen: 'ShopNavigator',
                           params: {screen: 'CartScreen'}
                       })}/>
-
-                {count && <View style={styles.badge}><Text style={styles.text}>{count}</Text></View>}
-                {/*<View style={styles.badge}><Text style={styles.text}>{count}</Text></View>*/}
-
+                {count ? <View style={styles.badge}><Text style={styles.text}>{count}</Text></View> : undefined}
+                {/*{count1 && <View style={styles.badge}><Text style={styles.text}>{count1}</Text></View>}*/}
             </HeaderButtons>
         ),
         headerLeft: () => (
@@ -56,10 +65,11 @@ export const ProductOverviewScreen = ({route}: any) => {
     const navigation = useAppNavigation()
     const products = useAppSelector(state => state.productsReducer.availableProducts)
     const dispatch = useAppDispatch()
+    // const quantity = useAppSelector(state => state.cartReducer.quantity)
     const quantity = useAppSelector(state => state.cartReducer.quantity)
 
 
-    const [count, setCount] = useState(0);
+    // const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isrRefreshing, setIsRefreshing] = useState(false);
 
@@ -99,27 +109,27 @@ export const ProductOverviewScreen = ({route}: any) => {
     useEffect(() => {
         for (const key in productsInCart) {
             quantityProductsInCart = quantityProductsInCart + productsInCart[key].quantity
-            // dispatch(changeQuantityAC({value: quantityProductsInCart}))
-            setCount(quantityProductsInCart)
+            dispatch(changeQuantityAC({value: quantity + 1}))
+            // setCount(quantityProductsInCart)
             // route.params.count = quantityProductsInCart ? quantityProductsInCart : null
         }
         if (Object.keys(productsInCart).length == 0) {
-            // dispatch(changeQuantityAC({value: null}))
+            dispatch(changeQuantityAC({value: 0}))
 
-            setCount(0)
-            // route.params.count = 0
+            // setCount(0)
         }
     }, [productsInCart])
 
 
-    useEffect(() => {
-
-            navigation.navigate("DrawerNavigator", {
-                screen: 'ShopNavigator',
-                params: {screen: 'ProductOverviewScreen', params: {count: count}}
-            })
-
-    }, [count]);
+    // useEffect(() => {
+    //     // navigation.navigate("DrawerNavigator", {
+    //     //         //     screen: 'ShopNavigator',
+    //     //     params: {screen: 'ProductOverviewScreen', params: {count: count}}
+    //     // })
+    //     navigation.setParams({screen: "ShopNavigator", params: {screen: "ProductOverviewScreen", params: {count}}})
+    //
+    //
+    // }, [count]);
 
 
     // useLayoutEffect(() => {

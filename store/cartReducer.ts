@@ -17,19 +17,19 @@ type ItemType = {
 type initialStateType = {
     items: { [key: string]: ItemType },
     totalAmount: number
-    quantity: number | null
+    quantity: number
 }
 
 
 const initialState: initialStateType = {
     items: {} as { [key: string]: ItemType },
     totalAmount: 0,
-    quantity: null
+    quantity: 0
 }
 
 export const addToCartAC = createAction<{ product: ProductType }>("cart/addToCartAC")
 export const removeFromCartAC = createAction<{ id: string }>("cart/removeFromCartAC")
-export const changeQuantityAC = createAction<{ value: number | null }>("cart/changeQuantityAC")
+ export const changeQuantityAC = createAction<{ value: number }>("cart/changeQuantityAC")
 
 
 const slice = createSlice({

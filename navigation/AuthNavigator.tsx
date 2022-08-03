@@ -1,9 +1,10 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Colors from "../constants/Colors";
 import {AuthScreen} from "../screens/user/AuthScreen";
+import {AuthNavigatorStackParamList} from "./types";
 
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator<AuthNavigatorStackParamList>()
 
 
 export const AuthNavigator = () => (

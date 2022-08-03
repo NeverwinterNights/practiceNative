@@ -2,12 +2,13 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Colors from "../constants/Colors";
 import {DrawerNavigator} from "./DrawerNavigation";
 import {AuthNavigator} from "./AuthNavigator";
+import {MainNavigatorStackParamList} from "./types";
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator<MainNavigatorStackParamList>()
 
 
 export const MainNavigator = () => (
-    <Stack.Navigator initialRouteName={"AuthNavigator"} screenOptions={{
+    <Stack.Navigator screenOptions={{
         headerStyle: {
             backgroundColor: Colors.primary
         },
